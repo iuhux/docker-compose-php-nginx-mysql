@@ -1,0 +1,29 @@
+nginx:
+  build: ./conf/nginx/
+  volumes:
+    - ./conf/nginx/config:/etc/nginx
+    - ./www/log/nginx:/var/log/nginx/
+  links:
+    - phpfpm
+  volumes_from:
+    - phpfpm
+  ports:
+    - "80:80"
+    - "443:443"
+
+phpfpm:
+  build: ./conf/phpfpm/
+  ports:
+    - "9000:9000"
+  links:
+    - mysql:mysql
+  volumes:
+    - ./conf/phpfpm/config:/usr/local/etc
+    - ./www/src:/var/www/src
+
+mysql:
+  image: mysql:latest
+  ports:
+    - "3306:3306"
+  environment:
+    MYSQL_ROOT_PASSWORD: “”
